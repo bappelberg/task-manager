@@ -12,9 +12,8 @@ class CommandLineTaskManager:
             print("1. List All Tasks")
             print("2. Add Task")
             print("3. Update Task")
-            print("4. Toggle Done")
-            print("5. Delete Task")
-            print("6. Exit")
+            print("4. Delete Task")
+            print("5. Exit")
 
             choice = input("Enter your choice (1-6): ")
 
@@ -25,14 +24,12 @@ class CommandLineTaskManager:
             elif choice == "3":
                 self.update_task()
             elif choice == "4":
-                self.toggle_done()
-            elif choice == "5":
                 self.delete_task()
-            elif choice == "6":
+            elif choice == "5":
                 print("Exiting Task Manager. Goodbye!")
                 break
             else:
-                print("Invalid choice. Please enter a number between 1 and 6.")
+                print("Invalid choice. Please enter a number between 1 and 5.")
 
     def list_all_tasks(self):
         tasks = self.task_repository.get_all_tasks()
@@ -102,7 +99,6 @@ class CommandLineTaskManager:
                         raise ValueError("Task ID must be an integer greater than 0")
 
                 task_id = int(task_id_str)
-                self.task_repository.get_task_by_id(task_id)
 
                 old = self.task_repository.get_task_by_id(task_id)
 
@@ -153,7 +149,7 @@ class CommandLineTaskManager:
                     if input(
                         f"Switch Is Done from {old.is_done} to {not old.is_done}  (Y or enter to skip): "
                     ).lower()
-                       == "y"
+                       == 'y'
                     else old.is_done
                 )
                 self.task_repository.update_task(
@@ -169,14 +165,6 @@ class CommandLineTaskManager:
                     continue
                 else:
                     break
-
-    def toggle_done(self):
-        task_id = int(input("Enter the ID of the task to toggle as done: "))
-        try:
-            self.task_repository.toggle_done(task_id)
-            print(f"Task {task_id} toggled as done.")
-        except ValueError as e:
-            print(e)
 
     def delete_task(self):
         task_id = int(input("Enter the ID of the task to delete: "))

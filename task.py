@@ -12,9 +12,6 @@ class Task:
 	def set_task_id(self, task_id: int) -> None:
 		self.task_id = task_id
 
-	def toggle_done(self) -> None:
-		self.is_done = not self.is_done
-
 	def __str__(self) -> str:
 		return (f"ID: {self.task_id}, "
 		        f"Title: {self.title}, "
