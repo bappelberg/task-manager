@@ -4,37 +4,36 @@ from task import Task
 
 
 class TaskRepository:
-    def __init__(self):
+    def __init__(self, file_path: str = 'tasks.txt'):
         self.tasks: List[Task] = []
-        self.file_path = 'tasks.txt'
+        self.file_path = file_path
         self.next_task_id = 1
         # Load tasks from the file on initialization
-        self.load_from_file(self.file_path)
+        self.load_from_file()
 
     def add_task(self, task: Task) -> None:
         task.set_task_id(self.next_task_id)
         self.next_task_id += 1
         self.tasks.append(task)
         # Save the new task to the file immediately
-        with open(self.file_path, 'a') as file:
-            file.write(f"{task.get_task_id()},{task.title},{task.description},{task.story_points},{task.is_done}\n")
+        self.save_to_file()
 
-    def save_to_file(self, file_path: str) -> None:
+    def save_to_file(self) -> None:
         with open(self.file_path, 'w') as file:
             for task in self.tasks:
                 file.write(f"{task.get_task_id()},{task.title},{task.description},{task.story_points},{task.is_done}\n")
 
-    def load_from_file(self, file_path: str) -> None:
+    def load_from_file(self) -> None:
         try:
             # Clear existing tasks before loading from the file
             self.tasks.clear()
-            with open(file_path, 'r') as file:
+            with open(self.file_path, 'r') as file:
                 for line in file:
                     # Parse each line and create a Task object
                     task_id, title, description, story_points, is_done = map(str.strip, line.split(','))
                     task = Task(title, description, int(story_points))
                     task.set_task_id(int(task_id))
-                    task.is_done = is_done.lower() == 'true'
+                    task.is_done = is_done
                     self.tasks.append(task)
 
         except FileNotFoundError:
@@ -51,20 +50,20 @@ class TaskRepository:
         task.description = new_description
         task.story_points = new_story_points
         task.is_done = new_is_done
-        self.save_to_file(self.file_path)
+        self.save_to_file()
 
     def delete_task(self, task_id: int) -> None:
         try:
             task = self.get_task_by_id(task_id)
             self.tasks.remove(task)
 
-            self.save_to_file(self.file_path)
+            self.save_to_file()
             print(f"Task {task_id} deleted successfully.")
         except ValueError as e:
             print(e)
 
     def get_all_tasks(self) -> List[Task]:
-        self.load_from_file(self.file_path)
+        self.load_from_file()
         return self.tasks
 
     def get_task_by_id(self, task_id: int) -> Task:

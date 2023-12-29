@@ -15,7 +15,7 @@ class CommandLineTaskManager:
             print("4. Delete Task")
             print("5. Exit")
 
-            choice = input("Enter your choice (1-6): ")
+            choice = str.strip(input("Enter your choice (1-5): "))
 
             if choice == "1":
                 self.list_all_tasks()
@@ -34,7 +34,7 @@ class CommandLineTaskManager:
     def list_all_tasks(self):
         tasks = self.task_repository.get_all_tasks()
         if not tasks:
-            print("No tasks found.")
+            return
         else:
             for task in tasks:
                 print(task)
@@ -103,7 +103,7 @@ class CommandLineTaskManager:
                 old = self.task_repository.get_task_by_id(task_id)
 
                 print(
-                    f"Updating Task {task_id}. Current values: {new_title or old.title, new_description or old.description, new_story_points or old.story_points, old.is_done}"
+                    f"Updating Task ID {task_id}. Current values: {new_title or old.title, new_description or old.description, new_story_points or old.story_points, old.is_done}"
                 )
                 break
             except ValueError as e:
@@ -145,13 +145,14 @@ class CommandLineTaskManager:
                                 "Story points must be a non-negative integer"
                             )
                 new_is_done = (
-                    True
+                    not old.is_done
                     if input(
                         f"Switch Is Done from {old.is_done} to {not old.is_done}  (Y or enter to skip): "
                     ).lower()
                        == 'y'
                     else old.is_done
                 )
+                print(new_is_done)
                 self.task_repository.update_task(
                     old.task_id, new_title, new_description, new_story_points, new_is_done
                 )
